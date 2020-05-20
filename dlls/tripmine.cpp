@@ -258,7 +258,19 @@ void CTripmineGrenade :: MakeBeam( void )
 	m_pBeam->PointEntInit( vecTmpEnd, entindex() );
 	m_pBeam->SetColor( 0, 214, 198 );
 	m_pBeam->SetScrollRate( 255 );
-	m_pBeam->SetBrightness( 64 );
+	//m_pBeam->SetBrightness( 64 );
+	if (g_iSkillLevel == SKILL_EASY) //unq - brightness of beam
+	{
+		m_pBeam->SetBrightness(64); //unq - original brightness
+	}
+	else if (g_iSkillLevel == SKILL_MEDIUM)
+	{
+		m_pBeam->SetBrightness(24);
+	}
+	else
+	{
+		m_pBeam->SetBrightness(8);
+	} //end unq
 }
 
 
