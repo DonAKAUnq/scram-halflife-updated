@@ -127,8 +127,7 @@ void CHalfLifeRules :: PlayerSpawn( CBasePlayer *pPlayer )
 //=========================================================
 BOOL CHalfLifeRules :: AllowAutoTargetCrosshair( void )
 {
-	//return ( g_iSkillLevel == SKILL_EASY );//unq - remove autoaim
-	return (0);//end unq
+	return ( g_iSkillLevel == SKILL_EASY );
 }
 
 //=========================================================
