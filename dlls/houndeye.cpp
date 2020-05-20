@@ -1269,7 +1269,7 @@ Schedule_t *CHoundeye :: GetSchedule( void )
 				return CBaseMonster :: GetSchedule();
 			}
 
-			if ( HasConditions( bits_COND_LIGHT_DAMAGE | bits_COND_HEAVY_DAMAGE ) )
+			if (HasConditions(bits_COND_LIGHT_DAMAGE | bits_COND_HEAVY_DAMAGE) && (g_iSkillLevel == SKILL_EASY)) //unq - add skill=easy check
 			{
 				if ( RANDOM_FLOAT( 0 , 1 ) <= 0.4 )
 				{
