@@ -22,6 +22,8 @@
 #include "effects.h"
 #include "gamerules.h"
 
+extern DLL_GLOBAL int g_iSkillLevel; //unq
+
 #define	TRIPMINE_PRIMARY_VOLUME		450
 
 
