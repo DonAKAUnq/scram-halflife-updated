@@ -23,6 +23,8 @@
 #include	"schedule.h"
 #include	"game.h"
 
+extern DLL_GLOBAL int g_iSkillLevel; //unq
+
 //=========================================================
 // Monster's Anim Events Go Here
 //=========================================================
@@ -186,21 +188,51 @@ void CHeadCrab :: SetYawSpeed ( void )
 	switch ( m_Activity )
 	{
 	case ACT_IDLE:			
-		ys = 30;
+		//ys = 30;
+		if (g_iSkillLevel == SKILL_EASY)	//begin unq
+			ys = 30;
+		else if (g_iSkillLevel == SKILL_MEDIUM)
+			ys = 180;
+		else
+			ys = 250; //end unq (make hcs turn a lot faster)
 		break;
 	case ACT_RUN:			
 	case ACT_WALK:			
-		ys = 20;
+		//ys = 20;
+		if (g_iSkillLevel == SKILL_EASY)	//begin unq
+			ys = 20;
+		else if (g_iSkillLevel == SKILL_MEDIUM)
+			ys = 180;
+		else
+			ys = 250; //end unq (make hcs turn a lot faster)
 		break;
 	case ACT_TURN_LEFT:
 	case ACT_TURN_RIGHT:
-		ys = 60;
+		//ys = 60;
+		if (g_iSkillLevel == SKILL_EASY)	//begin unq
+			ys = 60;
+		else if (g_iSkillLevel == SKILL_MEDIUM)
+			ys = 180;
+		else
+			ys = 250; //end unq (make hcs turn a lot faster)
 		break;
 	case ACT_RANGE_ATTACK1:	
-		ys = 30;
+		//ys = 30;
+		if (g_iSkillLevel == SKILL_EASY)	//begin unq
+			ys = 30;
+		else if (g_iSkillLevel == SKILL_MEDIUM)
+			ys = 180;
+		else
+			ys = 250; //end unq (make hcs turn a lot faster)
 		break;
 	default:
-		ys = 30;
+		//ys = 30;
+		if (g_iSkillLevel == SKILL_EASY)	//begin unq
+			ys = 30;
+		else if (g_iSkillLevel == SKILL_MEDIUM)
+			ys = 180;
+		else
+			ys = 250; //end unq (make hcs turn a lot faster)
 		break;
 	}
 
@@ -250,6 +282,10 @@ void CHeadCrab :: HandleAnimEvent( MonsterEvent_t *pEvent )
 				{
 					vecJumpDir = vecJumpDir * ( 650.0 / distance );
 				}
+				if (g_iSkillLevel == SKILL_MEDIUM)	//unq - speed up jump on med & hard			
+					pev->framerate = 1.5;
+				else if (g_iSkillLevel == SKILL_HARD)
+					pev->framerate = 2.0;	//end unq
 			}
 			else
 			{
@@ -289,7 +325,14 @@ void CHeadCrab :: Spawn()
 	pev->health			= gSkillData.headcrabHealth;
 	pev->view_ofs		= Vector ( 0, 0, 20 );// position of the eyes relative to monster's origin.
 	pev->yaw_speed		= 5;//!!! should we put this in the monster's changeanim function since turn rates may vary with state/anim?
-	m_flFieldOfView		= 0.5;// indicates the width of this monster's forward view cone ( as a dotproduct result )
+	if (g_iSkillLevel != SKILL_EASY)
+	{
+		m_flFieldOfView = VIEW_FIELD_WIDE;// unq - change to +- 135 degrees (-0.7) for medium & hard
+	}
+	else
+	{
+		m_flFieldOfView = 0.5; // original FOV (+- 60 degrees)// indicates the width of this monster's forward view cone ( as a dotproduct result )
+	}
 	m_MonsterState		= MONSTERSTATE_NONE;
 
 	MonsterInit();
