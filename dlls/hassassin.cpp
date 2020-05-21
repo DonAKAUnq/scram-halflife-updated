@@ -103,6 +103,8 @@ public:
 	int		m_iFrustration;
 
 	int		m_iShell;
+
+	float	ASS_STEP_VOLUME; // unq - add variable for footstep volume
 };
 LINK_ENTITY_TO_CLASS( monster_human_assassin, CHAssassin );
 
@@ -207,7 +209,8 @@ void CHAssassin :: Shoot ( void )
 		m_flDiviation -= 0.01;
 		if (m_flDiviation < 0.02)
 			m_flDiviation = 0.02;
-	}
+	}//unqnote - they get more accurate as they keep shooting! evil.
+
 	m_flLastShot = gpGlobals->time;
 
 	UTIL_MakeVectors ( pev->angles );
@@ -299,7 +302,20 @@ void CHAssassin :: Spawn()
 	m_iTargetRanderamt	= 20;
 	pev->renderamt		= 20;
 	pev->rendermode		= kRenderTransTexture;
-
+	
+	if (g_iSkillLevel == SKILL_EASY) // begin unq set volume
+	{
+		ASS_STEP_VOLUME = 0.5; //unq - original volume
+	}
+	else if (g_iSkillLevel == SKILL_MEDIUM)
+	{
+		ASS_STEP_VOLUME = 0.25;
+	}
+	else
+	{
+		ASS_STEP_VOLUME = 0.0;
+	} // end unq set volume
+	
 	MonsterInit();
 }
 
@@ -716,7 +732,7 @@ void CHAssassin :: RunAI( void )
 
 	// always visible if moving
 	// always visible is not on hard
-	if (g_iSkillLevel != SKILL_HARD || m_hEnemy == NULL || pev->deadflag != DEAD_NO || m_Activity == ACT_RUN || m_Activity == ACT_WALK || !(pev->flags & FL_ONGROUND))
+	if (g_iSkillLevel == SKILL_EASY || m_hEnemy == NULL || pev->deadflag != DEAD_NO || m_Activity == ACT_RUN || m_Activity == ACT_WALK || !(pev->flags & FL_ONGROUND))//unq - make easy only!
 		m_iTargetRanderamt = 255;
 	else
 		m_iTargetRanderamt = 20;
@@ -738,21 +754,36 @@ void CHAssassin :: RunAI( void )
 			pev->rendermode = kRenderNormal;
 	}
 
-	if (m_Activity == ACT_RUN || m_Activity == ACT_WALK)
+	if ((m_Activity == ACT_RUN || m_Activity == ACT_WALK) && (g_iSkillLevel == SKILL_EASY)) //unq for easy only
 	{
 		static int iStep = 0;
-		iStep = ! iStep;
+		iStep = !iStep;
 		if (iStep)
 		{
-			switch( RANDOM_LONG( 0, 3 ) )
+			switch (RANDOM_LONG(0, 3))
 			{
-			case 0:	EMIT_SOUND( ENT(pev), CHAN_BODY, "player/pl_step1.wav", 0.5, ATTN_NORM);	break;
-			case 1:	EMIT_SOUND( ENT(pev), CHAN_BODY, "player/pl_step3.wav", 0.5, ATTN_NORM);	break;
-			case 2:	EMIT_SOUND( ENT(pev), CHAN_BODY, "player/pl_step2.wav", 0.5, ATTN_NORM);	break;
-			case 3:	EMIT_SOUND( ENT(pev), CHAN_BODY, "player/pl_step4.wav", 0.5, ATTN_NORM);	break;
+			case 0:	EMIT_SOUND(ENT(pev), CHAN_BODY, "player/pl_step1.wav", ASS_STEP_VOLUME, ATTN_NORM);	break;
+			case 1:	EMIT_SOUND(ENT(pev), CHAN_BODY, "player/pl_step3.wav", ASS_STEP_VOLUME, ATTN_NORM);	break;
+			case 2:	EMIT_SOUND(ENT(pev), CHAN_BODY, "player/pl_step2.wav", ASS_STEP_VOLUME, ATTN_NORM);	break;
+			case 3:	EMIT_SOUND(ENT(pev), CHAN_BODY, "player/pl_step4.wav", ASS_STEP_VOLUME, ATTN_NORM);	break;
 			}
 		}
 	}
+	if ((m_Activity == ACT_RUN) && (g_iSkillLevel != SKILL_EASY)) // unq - removed walk, for medium and hard make sound while running only
+	{
+		static int iStep = 0;
+		iStep = !iStep;
+		if (iStep)
+		{
+			switch (RANDOM_LONG(0, 3))
+			{
+			case 0:	EMIT_SOUND(ENT(pev), CHAN_BODY, "player/pl_step1.wav", ASS_STEP_VOLUME, ATTN_NORM);	break; //unq - made volume 0.25 for medium, 0 for hard :)
+			case 1:	EMIT_SOUND(ENT(pev), CHAN_BODY, "player/pl_step3.wav", ASS_STEP_VOLUME, ATTN_NORM);	break;
+			case 2:	EMIT_SOUND(ENT(pev), CHAN_BODY, "player/pl_step2.wav", ASS_STEP_VOLUME, ATTN_NORM);	break;
+			case 3:	EMIT_SOUND(ENT(pev), CHAN_BODY, "player/pl_step4.wav", ASS_STEP_VOLUME, ATTN_NORM);	break;
+			}
+		}
+	} // end unq
 }
 
 
