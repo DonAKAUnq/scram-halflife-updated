@@ -27,6 +27,8 @@
 #include	"soundent.h"
 #include	"game.h"
 
+extern DLL_GLOBAL int g_iSkillLevel; //unq
+
 extern CGraph WorldGraph;
 
 // houndeye does 20 points of damage spread over a sphere 384 units in diameter, and each additional 
