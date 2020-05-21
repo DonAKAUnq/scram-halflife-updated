@@ -24,6 +24,7 @@
 #include	"monsters.h"
 #include	"schedule.h"
 
+extern DLL_GLOBAL int g_iSkillLevel; //unq
 
 //=========================================================
 // Monster's Anim Events Go Here
@@ -196,6 +197,10 @@ void CZombie :: HandleAnimEvent( MonsterEvent_t *pEvent )
 		{
 			// do stuff for this event.
 	//		ALERT( at_console, "Slash right!\n" );
+			if (g_iSkillLevel == SKILL_MEDIUM)	//unq - speed up on med & hard			
+				pev->framerate = 1.5;
+			else if (g_iSkillLevel == SKILL_HARD)
+				pev->framerate = 2.0;	// end unq
 			CBaseEntity *pHurt = CheckTraceHullAttack( 70, gSkillData.zombieDmgOneSlash, DMG_SLASH );
 			if ( pHurt )
 			{
@@ -220,6 +225,10 @@ void CZombie :: HandleAnimEvent( MonsterEvent_t *pEvent )
 		{
 			// do stuff for this event.
 	//		ALERT( at_console, "Slash left!\n" );
+			if (g_iSkillLevel == SKILL_MEDIUM)	//unq - speed up on med & hard			
+				pev->framerate = 1.5;
+			else if (g_iSkillLevel == SKILL_HARD)
+				pev->framerate = 2.0;	// end unq
 			CBaseEntity *pHurt = CheckTraceHullAttack( 70, gSkillData.zombieDmgOneSlash, DMG_SLASH );
 			if ( pHurt )
 			{
@@ -242,6 +251,10 @@ void CZombie :: HandleAnimEvent( MonsterEvent_t *pEvent )
 		case ZOMBIE_AE_ATTACK_BOTH:
 		{
 			// do stuff for this event.
+			if (g_iSkillLevel == SKILL_MEDIUM)	//unq - speed up on med & hard			
+				pev->framerate = 1.5;
+			else if (g_iSkillLevel == SKILL_HARD)
+				pev->framerate = 2.0;	// end unq
 			CBaseEntity *pHurt = CheckTraceHullAttack( 70, gSkillData.zombieDmgBothSlash, DMG_SLASH );
 			if ( pHurt )
 			{
@@ -281,7 +294,14 @@ void CZombie :: Spawn()
 	m_bloodColor		= BLOOD_COLOR_GREEN;
 	pev->health			= gSkillData.zombieHealth;
 	pev->view_ofs		= VEC_VIEW;// position of the eyes relative to monster's origin.
-	m_flFieldOfView		= 0.5;// indicates the width of this monster's forward view cone ( as a dotproduct result )
+	if (g_iSkillLevel != SKILL_EASY)
+	{
+		m_flFieldOfView = VIEW_FIELD_WIDE;// unq - change to +- 135 degrees (-0.7) for medium & hard
+	}
+	else
+	{
+		m_flFieldOfView = 0.5; // original FOV (+- 60 degrees)// indicates the width of this monster's forward view cone ( as a dotproduct result )
+	}
 	m_MonsterState		= MONSTERSTATE_NONE;
 	m_afCapability		= bits_CAP_DOORS_GROUP;
 
