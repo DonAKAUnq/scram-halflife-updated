@@ -26,6 +26,8 @@
 #include	"soundent.h"
 #include	"hornet.h"
 
+extern DLL_GLOBAL int g_iSkillLevel; //unq
+
 //=========================================================
 // monster-specific schedule types
 //=========================================================
@@ -249,7 +251,13 @@ void CAGrunt :: TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vecD
 			MESSAGE_END();
 		}
 
-		flDamage -= 20;
+		if (g_iSkillLevel == SKILL_EASY) //unq - improve agrunt's armor
+			flDamage -= 20; // original
+		else if (g_iSkillLevel == SKILL_MEDIUM)
+			flDamage -= 40;
+		else
+			flDamage -= 60; //end unq
+		
 		if (flDamage <= 0)
 			flDamage = 0.1;// don't hurt the monster much, but allow bits_COND_LIGHT_DAMAGE to be generated
 	}
@@ -584,7 +592,14 @@ void CAGrunt :: Spawn()
 	m_bloodColor		= BLOOD_COLOR_GREEN;
 	pev->effects		= 0;
 	pev->health			= gSkillData.agruntHealth;
-	m_flFieldOfView		= 0.2;// indicates the width of this monster's forward view cone ( as a dotproduct result )
+	if (g_iSkillLevel != SKILL_EASY) //unq - improve agrunt's FOV
+	{
+		m_flFieldOfView = VIEW_FIELD_WIDE; //unq - change to -0.7 (+- 135 degrees)
+	}
+	else
+	{
+		m_flFieldOfView = 0.2; //(+-75.5 degrees) - indicates the width of this monster's forward view cone ( as a dotproduct result )
+	} //end unq
 	m_MonsterState		= MONSTERSTATE_NONE;
 	m_afCapability		= 0;
 	m_afCapability		|= bits_CAP_SQUAD;
