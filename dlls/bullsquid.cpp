@@ -554,7 +554,7 @@ void CBullsquid :: SetYawSpeed ( void )
 			ys = 250;
 			break;
 		} // end unq
-
+	}
 	pev->yaw_speed = ys;
 }
 
