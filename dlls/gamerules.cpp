@@ -302,6 +302,11 @@ void CGameRules::RefreshSkillData ( void )
 	gSkillData.plrStomach = GetSkillCvar( "sk_player_stomach" );
 	gSkillData.plrLeg = GetSkillCvar( "sk_player_leg" );
 	gSkillData.plrArm = GetSkillCvar( "sk_player_arm" );
+	
+	// Osprey - added by unq
+	gSkillData.ospreyHealth = GetSkillCvar("sk_osprey_health");
+	// end unq
+
 }
 
 //=========================================================

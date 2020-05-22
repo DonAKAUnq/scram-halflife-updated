@@ -155,9 +155,16 @@ void COsprey :: Spawn( void )
 
 	pev->flags |= FL_MONSTER;
 	pev->takedamage		= DAMAGE_YES;
-	m_flRightHealth		= 200;
-	m_flLeftHealth		= 200;
-	pev->health			= 400;
+	// start unq - change Osprey health to variable
+
+	//	m_flRightHealth		= 200;
+	//	m_flLeftHealth		= 200;
+	//	pev->health			= 400;
+	pev->health = gSkillData.ospreyHealth;
+	m_flRightHealth = gSkillData.ospreyHealth / 2.0;
+	m_flLeftHealth = gSkillData.ospreyHealth - m_flRightHealth;
+
+	// end unq
 
 	m_flFieldOfView = 0; // 180 degrees
 

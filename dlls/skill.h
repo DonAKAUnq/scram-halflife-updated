@@ -90,6 +90,7 @@ struct skilldata_t
 	float miniturretHealth;
 	float sentryHealth;
 
+	float ospreyHealth; //unq
 
 // Player Weapons
 	float plrDmgCrowbar;

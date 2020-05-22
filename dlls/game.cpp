@@ -448,6 +448,14 @@ cvar_t	sk_player_leg1	= { "sk_player_leg1","1" };
 cvar_t	sk_player_leg2	= { "sk_player_leg2","1" };
 cvar_t	sk_player_leg3	= { "sk_player_leg3","1" };
 
+// unq - also add Osprey health
+
+cvar_t	sk_osprey_health1 = { "sk_osprey_health1","400" };
+cvar_t	sk_osprey_health2 = { "sk_osprey_health2","400" };
+cvar_t	sk_osprey_health3 = { "sk_osprey_health3","400" };
+
+// end unq - osprey
+
 // END Cvars for Skill Level settings
 
 // Register your console variables here
@@ -883,6 +891,15 @@ void GameDLLInit( void )
 	CVAR_REGISTER ( &sk_player_leg1 );
 	CVAR_REGISTER ( &sk_player_leg2 );
 	CVAR_REGISTER ( &sk_player_leg3 );
+
+	// unq - add osprey
+
+	CVAR_REGISTER(&sk_osprey_health1);
+	CVAR_REGISTER(&sk_osprey_health2);
+	CVAR_REGISTER(&sk_osprey_health3);
+
+	// end unq - osprey health
+
 // END REGISTER CVARS FOR SKILL LEVEL STUFF
 
 	SERVER_COMMAND( "exec skill.cfg\n" );
