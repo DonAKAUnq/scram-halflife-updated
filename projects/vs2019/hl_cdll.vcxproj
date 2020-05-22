@@ -103,8 +103,10 @@ EXIT /B 0</Command>
       </BaseAddress>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>cd /D "$(ProjectDir)..\.."
+cmd /c copy-client.bat
+EXIT /B 0</Command>
+      <Message>Copy client.dll</Message>
     </PostBuildEvent>
     <PostBuildEvent />
   </ItemDefinitionGroup>

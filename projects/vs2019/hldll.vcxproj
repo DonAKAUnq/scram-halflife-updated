@@ -50,7 +50,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(Configuration)\$(ProjectName)\int\</IntDir>
-    <TargetName>hl</TargetName>
+    <TargetName>scram</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -99,8 +99,10 @@ EXIT /B 0</Command>
       <ModuleDefinitionFile>$(ProjectDir)..\..\dlls\hl.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>cd /D "$(ProjectDir)..\.."
+cmd /c copy-server.bat
+EXIT /B 0</Command>
+      <Message>Copy hl.dll</Message>
     </PostBuildEvent>
     <PostBuildEvent />
   </ItemDefinitionGroup>
