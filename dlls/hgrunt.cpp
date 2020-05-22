@@ -49,7 +49,7 @@ extern DLL_GLOBAL int		g_iSkillLevel;
 //=========================================================
 // monster-specific DEFINE's
 //=========================================================
-#define	GRUNT_CLIP_SIZE					36 // how many bullets in a clip? - NOTE: 3 round burst sound, so keep as 3 * x!
+// #define	GRUNT_CLIP_SIZE					36 // how many bullets in a clip? - NOTE: 3 round burst sound, so keep as 3 * x! //unqnote: change this!
 #define GRUNT_VOL						0.35		// volume of grunt sounds
 #define GRUNT_ATTN						ATTN_NORM	// attenutation of grunt sentences
 #define HGRUNT_LIMP_HEALTH				20
@@ -185,6 +185,10 @@ public:
 	int		m_iSentence;
 
 	static const char *pGruntSentences[];
+
+	int GRUNT_CLIP_SIZE; //added by unq to vary by difficulty level
+	Vector GRUNT_MP5_ACCURACY; //added by unq to vary by difficulty level
+	Vector GRUNT_SHOTGUN_ACCURACY; //added by unq to vary by difficulty level
 };
 
 LINK_ENTITY_TO_CLASS( monster_human_grunt, CHGrunt );
@@ -791,6 +795,19 @@ void CHGrunt :: Shoot ( void )
 		return;
 	}
 
+	if (g_iSkillLevel == SKILL_EASY) // start unq - change accuracy on med & hard
+	{
+		GRUNT_MP5_ACCURACY = VECTOR_CONE_10DEGREES; // original value
+	}
+	else if (g_iSkillLevel == SKILL_MEDIUM)
+	{
+		GRUNT_MP5_ACCURACY = VECTOR_CONE_5DEGREES;
+	}
+	else
+	{
+		GRUNT_MP5_ACCURACY = VECTOR_CONE_2DEGREES;
+	} // end unq changing mp5 accuracy
+
 	Vector vecShootOrigin = GetGunPosition();
 	Vector vecShootDir = ShootAtEnemy( vecShootOrigin );
 
@@ -798,7 +815,7 @@ void CHGrunt :: Shoot ( void )
 
 	Vector	vecShellVelocity = gpGlobals->v_right * RANDOM_FLOAT(40,90) + gpGlobals->v_up * RANDOM_FLOAT(75,200) + gpGlobals->v_forward * RANDOM_FLOAT(-40, 40);
 	EjectBrass ( vecShootOrigin - vecShootDir * 24, vecShellVelocity, pev->angles.y, m_iBrassShell, TE_BOUNCE_SHELL); 
-	FireBullets(1, vecShootOrigin, vecShootDir, VECTOR_CONE_10DEGREES, 2048, BULLET_MONSTER_MP5 ); // shoot +-5 degrees
+	FireBullets(1, vecShootOrigin, vecShootDir, GRUNT_MP5_ACCURACY, 2048, BULLET_MONSTER_MP5 ); // shoot +-5 degrees // unq changed from VECTOR_CONE_10DEGREES
 
 	pev->effects |= EF_MUZZLEFLASH;
 	
@@ -818,6 +835,19 @@ void CHGrunt :: Shotgun ( void )
 		return;
 	}
 
+	if (g_iSkillLevel == SKILL_EASY) // start unq - change accuracy on med & hard
+	{
+		GRUNT_SHOTGUN_ACCURACY = VECTOR_CONE_15DEGREES; // original value
+	}
+	else if (g_iSkillLevel == SKILL_MEDIUM)
+	{
+		GRUNT_SHOTGUN_ACCURACY = VECTOR_CONE_10DEGREES; // not evil enough?
+	}
+	else
+	{
+		GRUNT_SHOTGUN_ACCURACY = VECTOR_CONE_5DEGREES;
+	} // end unq changing shotgun accuracy
+
 	Vector vecShootOrigin = GetGunPosition();
 	Vector vecShootDir = ShootAtEnemy( vecShootOrigin );
 
@@ -825,7 +855,7 @@ void CHGrunt :: Shotgun ( void )
 
 	Vector	vecShellVelocity = gpGlobals->v_right * RANDOM_FLOAT(40,90) + gpGlobals->v_up * RANDOM_FLOAT(75,200) + gpGlobals->v_forward * RANDOM_FLOAT(-40, 40);
 	EjectBrass ( vecShootOrigin - vecShootDir * 24, vecShellVelocity, pev->angles.y, m_iShotgunShell, TE_BOUNCE_SHOTSHELL); 
-	FireBullets(gSkillData.hgruntShotgunPellets, vecShootOrigin, vecShootDir, VECTOR_CONE_15DEGREES, 2048, BULLET_PLAYER_BUCKSHOT, 0 ); // shoot +-7.5 degrees
+	FireBullets(gSkillData.hgruntShotgunPellets, vecShootOrigin, vecShootDir, GRUNT_SHOTGUN_ACCURACY, 2048, BULLET_PLAYER_BUCKSHOT, 0 ); // shoot +-7.5 degrees //unq changed from VECTOR_CONE_15DEGREES
 
 	pev->effects |= EF_MUZZLEFLASH;
 	
@@ -1000,6 +1030,19 @@ void CHGrunt :: Spawn()
 	m_fFirstEncounter	= TRUE;// this is true when the grunt spawns, because he hasn't encountered an enemy yet.
 
 	m_HackedGunPos = Vector ( 0, 0, 55 );
+
+	if (g_iSkillLevel == SKILL_EASY) // start unq - change accuracy on med & hard
+	{
+		GRUNT_CLIP_SIZE = 36; //original value
+	}
+	else if (g_iSkillLevel == SKILL_MEDIUM)
+	{
+		GRUNT_CLIP_SIZE = 42;
+	}
+	else
+	{
+		GRUNT_CLIP_SIZE = 48;
+	} // end unq changing accuracy & clip size
 
 	if (pev->weapons == 0)
 	{
@@ -1568,7 +1611,7 @@ Schedule_t	slGruntTossGrenadeCover[] =
 //=========================================================
 Task_t	tlGruntTakeCoverFromBestSound[] =
 {
-	{ TASK_SET_FAIL_SCHEDULE,			(float)SCHED_COWER			},// duck and cover if cannot move from explosion
+	{ TASK_SET_FAIL_SCHEDULE,			(float)SCHED_RANGE_ATTACK1	},// duck and cover if cannot move from explosion // unq -remove cower from AI
 	{ TASK_STOP_MOVING,					(float)0					},
 	{ TASK_FIND_COVER_FROM_BEST_SOUND,	(float)0					},
 	{ TASK_RUN_PATH,					(float)0					},
