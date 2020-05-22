@@ -31,6 +31,8 @@
 #include "weapons.h"
 #include "effects.h"
 
+extern DLL_GLOBAL int g_iSkillLevel; //unq
+
 extern Vector VecBModelOrigin( entvars_t* pevBModel );
 
 #define TURRET_SHOTS	2
@@ -39,7 +41,7 @@ extern Vector VecBModelOrigin( entvars_t* pevBModel );
 #define TURRET_TURNRATE	30		//angles per 0.1 second
 #define TURRET_MAXWAIT	15		// seconds turret will stay active w/o a target
 #define TURRET_MAXSPIN	5		// seconds turret barrel will spin w/o a target
-#define TURRET_MACHINE_VOLUME	0.5
+//#define TURRET_MACHINE_VOLUME	0.5 //unq - change to variable
 
 typedef enum
 {
@@ -132,6 +134,13 @@ public:
 
 	float	m_flPingTime;	// Time until the next ping, used when searching
 	float	m_flSpinUpTime;	// Amount of time until the barrel should spin down when searching
+
+	float	TURRET_MACHINE_VOLUME; // unq - add variable for common volume
+	float	TURRET_PING_VOLUME; // unq - add variable for ping volume
+	float	TURRET_SHOOT_VOLUME; // unq - add variable for shoot volume
+
+	static const char* pNormalShots[]; //unq - array for gun sounds
+	static const char* pSilentShots[]; //unq - array for silenced sounds
 };
 
 
@@ -197,6 +206,18 @@ TYPEDESCRIPTION	CTurret::m_SaveData[] =
 
 IMPLEMENT_SAVERESTORE( CTurret, CBaseTurret );
 
+const char* CBaseTurret::pNormalShots[] =  //unq - array for gun sounds
+{
+	"weapons/hks1.wav",
+	"weapons/hks2.wav",
+	"weapons/hks3.wav",
+};
+
+const char* CBaseTurret::pSilentShots[] = //unq - array for silenced gun sounds
+{
+	"player/pl_gun1.wav",
+	"player/pl_gun2.wav",
+}; // end unq
 
 class CMiniTurret : public CBaseTurret
 {
@@ -270,6 +291,24 @@ void CBaseTurret::Spawn()
 	SetBoneController( 1, 0 );
 	m_flFieldOfView = VIEW_FIELD_FULL;
 	// m_flSightRange = TURRET_RANGE;
+	if (g_iSkillLevel == SKILL_EASY) // begin unq set volumes
+	{
+		TURRET_MACHINE_VOLUME = 0.5; //unq - original volume
+		TURRET_PING_VOLUME = 1.0;
+		TURRET_SHOOT_VOLUME = 1.0;
+	}
+	else if (g_iSkillLevel == SKILL_MEDIUM)
+	{
+		TURRET_MACHINE_VOLUME = 0.3;
+		TURRET_PING_VOLUME = 0.4;
+		TURRET_SHOOT_VOLUME = 0.4;
+	}
+	else
+	{
+		TURRET_MACHINE_VOLUME = 0.1;
+		TURRET_PING_VOLUME = 0.2;
+		TURRET_SHOOT_VOLUME = 0.3;
+	} // end unq set volumes
 }
 
 
@@ -287,6 +326,8 @@ void CBaseTurret::Precache( )
 	PRECACHE_SOUND ("turret/tu_spindown.wav");
 	PRECACHE_SOUND ("turret/tu_search.wav");
 	PRECACHE_SOUND ("turret/tu_alert.wav");
+	PRECACHE_SOUND_ARRAY(pNormalShots); //unq - normal gun sounds
+	PRECACHE_SOUND_ARRAY(pSilentShots); //unq - silenced sounds
 }
 
 #define TURRET_GLOW_SPRITE "sprites/flare3.spr"
@@ -424,7 +465,8 @@ void CBaseTurret::Ping( void )
 	else if (m_flPingTime <= gpGlobals->time)
 	{
 		m_flPingTime = gpGlobals->time + 1;
-		EMIT_SOUND(ENT(pev), CHAN_ITEM, "turret/tu_ping.wav", 1, ATTN_NORM);
+		//EMIT_SOUND(ENT(pev), CHAN_ITEM, "turret/tu_ping.wav", 1, ATTN_NORM); // unq comment out original line
+		EMIT_SOUND(ENT(pev), CHAN_ITEM, "turret/tu_ping.wav", TURRET_PING_VOLUME, ATTN_NORM); //unq add ping volume variable
 		EyeOn( );
 	}
 	else if (m_eyeBrightness > 0)
@@ -619,7 +661,8 @@ void CBaseTurret::ActiveThink(void)
 void CTurret::Shoot(Vector &vecSrc, Vector &vecDirToEnemy)
 {
 	FireBullets( 1, vecSrc, vecDirToEnemy, TURRET_SPREAD, TURRET_RANGE, BULLET_MONSTER_12MM, 1 );
-	EMIT_SOUND(ENT(pev), CHAN_WEAPON, "turret/tu_fire1.wav", 1, 0.6);
+	//EMIT_SOUND(ENT(pev), CHAN_WEAPON, "turret/tu_fire1.wav", 1, 0.6); // unq - original
+	EMIT_SOUND(ENT(pev), CHAN_WEAPON, "turret/tu_fire1.wav", TURRET_SHOOT_VOLUME, 0.6); // unq - add volume variable
 	pev->effects = pev->effects | EF_MUZZLEFLASH;
 }
 
@@ -627,13 +670,24 @@ void CTurret::Shoot(Vector &vecSrc, Vector &vecDirToEnemy)
 void CMiniTurret::Shoot(Vector &vecSrc, Vector &vecDirToEnemy)
 {
 	FireBullets( 1, vecSrc, vecDirToEnemy, TURRET_SPREAD, TURRET_RANGE, BULLET_MONSTER_9MM, 1 );
-
+/*
 	switch(RANDOM_LONG(0,2))
 	{
 	case 0: EMIT_SOUND(ENT(pev), CHAN_WEAPON, "weapons/hks1.wav", 1, ATTN_NORM); break;
 	case 1: EMIT_SOUND(ENT(pev), CHAN_WEAPON, "weapons/hks2.wav", 1, ATTN_NORM); break;
 	case 2: EMIT_SOUND(ENT(pev), CHAN_WEAPON, "weapons/hks3.wav", 1, ATTN_NORM); break;
 	}
+*/ // unq - comment out original weapon sounds
+
+	if (g_iSkillLevel != SKILL_HARD) //unq - add different shots based on skill
+	{
+		EMIT_SOUND(ENT(pev), CHAN_WEAPON, RANDOM_SOUND_ARRAY(pNormalShots), TURRET_SHOOT_VOLUME, ATTN_NORM);
+	}
+	else
+	{
+		EMIT_SOUND(ENT(pev), CHAN_WEAPON, RANDOM_SOUND_ARRAY(pSilentShots), TURRET_SHOOT_VOLUME, ATTN_NORM);
+	} // end unq
+
 	pev->effects = pev->effects | EF_MUZZLEFLASH;
 }
 
@@ -931,11 +985,11 @@ void CBaseTurret ::	TurretDeath( void )
 		float flRndSound = RANDOM_FLOAT ( 0 , 1 );
 
 		if ( flRndSound <= 0.33 )
-			EMIT_SOUND(ENT(pev), CHAN_BODY, "turret/tu_die.wav", 1.0, ATTN_NORM);
-		else if ( flRndSound <= 0.66 )
-			EMIT_SOUND(ENT(pev), CHAN_BODY, "turret/tu_die2.wav", 1.0, ATTN_NORM);
-		else 
-			EMIT_SOUND(ENT(pev), CHAN_BODY, "turret/tu_die3.wav", 1.0, ATTN_NORM);
+			EMIT_SOUND(ENT(pev), CHAN_BODY, "turret/tu_die.wav", TURRET_MACHINE_VOLUME, ATTN_NORM); // unq - add volume variable
+		else if (flRndSound <= 0.66)
+			EMIT_SOUND(ENT(pev), CHAN_BODY, "turret/tu_die2.wav", TURRET_MACHINE_VOLUME, ATTN_NORM); // unq
+		else
+			EMIT_SOUND(ENT(pev), CHAN_BODY, "turret/tu_die3.wav", TURRET_MACHINE_VOLUME, ATTN_NORM); // unq
 
 		EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, "turret/tu_active2.wav", 0, 0, SND_STOP, 100);
 
@@ -1188,12 +1242,23 @@ void CSentry::Shoot(Vector &vecSrc, Vector &vecDirToEnemy)
 {
 	FireBullets( 1, vecSrc, vecDirToEnemy, TURRET_SPREAD, TURRET_RANGE, BULLET_MONSTER_MP5, 1 );
 	
-	switch(RANDOM_LONG(0,2))
+	/*	switch(RANDOM_LONG(0,2))
+		{
+		case 0: EMIT_SOUND(ENT(pev), CHAN_WEAPON, "weapons/hks1.wav", TURRET_SHOOT_VOLUME, ATTN_NORM); break; // unq - add volume
+		case 1: EMIT_SOUND(ENT(pev), CHAN_WEAPON, "weapons/hks2.wav", TURRET_SHOOT_VOLUME, ATTN_NORM); break; // unq
+		case 2: EMIT_SOUND(ENT(pev), CHAN_WEAPON, "weapons/hks3.wav", TURRET_SHOOT_VOLUME, ATTN_NORM); break; // unq
+		}
+	*/ // unq - comment out original sound code
+
+	if (g_iSkillLevel != SKILL_HARD) //unq - add different shots based on skill
 	{
-	case 0: EMIT_SOUND(ENT(pev), CHAN_WEAPON, "weapons/hks1.wav", 1, ATTN_NORM); break;
-	case 1: EMIT_SOUND(ENT(pev), CHAN_WEAPON, "weapons/hks2.wav", 1, ATTN_NORM); break;
-	case 2: EMIT_SOUND(ENT(pev), CHAN_WEAPON, "weapons/hks3.wav", 1, ATTN_NORM); break;
+		EMIT_SOUND(ENT(pev), CHAN_WEAPON, RANDOM_SOUND_ARRAY(pNormalShots), TURRET_SHOOT_VOLUME, ATTN_NORM);
 	}
+	else
+	{
+		EMIT_SOUND(ENT(pev), CHAN_WEAPON, RANDOM_SOUND_ARRAY(pSilentShots), TURRET_SHOOT_VOLUME, ATTN_NORM);
+	} // end unq
+
 	pev->effects = pev->effects | EF_MUZZLEFLASH;
 }
 
@@ -1253,11 +1318,11 @@ void CSentry ::	SentryDeath( void )
 		float flRndSound = RANDOM_FLOAT ( 0 , 1 );
 
 		if ( flRndSound <= 0.33 )
-			EMIT_SOUND(ENT(pev), CHAN_BODY, "turret/tu_die.wav", 1.0, ATTN_NORM);
+			EMIT_SOUND(ENT(pev), CHAN_BODY, "turret/tu_die.wav", TURRET_MACHINE_VOLUME, ATTN_NORM); //unq - add volume
 		else if ( flRndSound <= 0.66 )
-			EMIT_SOUND(ENT(pev), CHAN_BODY, "turret/tu_die2.wav", 1.0, ATTN_NORM);
+			EMIT_SOUND(ENT(pev), CHAN_BODY, "turret/tu_die2.wav", TURRET_MACHINE_VOLUME, ATTN_NORM); // unq
 		else 
-			EMIT_SOUND(ENT(pev), CHAN_BODY, "turret/tu_die3.wav", 1.0, ATTN_NORM);
+			EMIT_SOUND(ENT(pev), CHAN_BODY, "turret/tu_die3.wav", TURRET_MACHINE_VOLUME, ATTN_NORM); // unq
 
 		EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, "turret/tu_active2.wav", 0, 0, SND_STOP, 100);
 
