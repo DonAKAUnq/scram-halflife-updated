@@ -27,8 +27,9 @@
 #include	"soundent.h"
 #include	"game.h"
 
-#define		SQUID_SPRINT_DIST	256 // how close the squid has to get before starting to sprint and refusing to swerve
+//#define		SQUID_SPRINT_DIST	256 // how close the squid has to get before starting to sprint and refusing to swerve //unq - remove as preprocessor, make as variable
 
+int			   SQUID_SPRINT_DIST; //unq
 int			   iSquidSpitSprite;
 	
 
@@ -358,11 +359,20 @@ BOOL CBullsquid :: CheckRangeAttack1 ( float flDot, float flDist )
 //=========================================================
 BOOL CBullsquid :: CheckMeleeAttack1 ( float flDot, float flDist )
 {
-	if ( m_hEnemy->pev->health <= gSkillData.bullsquidDmgWhip && flDist <= 85 && flDot >= 0.7 )
+	//if ( m_hEnemy->pev->health <= gSkillData.bullsquidDmgWhip && flDist <= 85 && flDot >= 0.7 ) // unq - remove original if statement
+	if (m_hEnemy->pev->health <= gSkillData.bullsquidDmgWhip && flDist <= 85 && flDot >= 0.7 && g_iSkillLevel == SKILL_EASY) //begin unq
 	{
 		return TRUE;
 	}
-	return FALSE;
+	else if (flDist <= 85 && flDot >= 0.7 && g_iSkillLevel == SKILL_MEDIUM && (RANDOM_LONG(0, 3) < 1))
+	{
+		return TRUE;
+	}
+	else if (flDist <= 85 && flDot >= 0.7 && g_iSkillLevel == SKILL_HARD && (RANDOM_LONG(0, 3) < 2))
+	{
+		return TRUE;
+	}
+	else return FALSE; // end unq
 }
 
 //=========================================================
@@ -506,16 +516,44 @@ void CBullsquid :: SetYawSpeed ( void )
 
 	ys = 0;
 
-	switch ( m_Activity )
+	if (g_iSkillLevel == SKILL_EASY) //unq - speed up turn
 	{
-	case	ACT_WALK:			ys = 90;	break;
-	case	ACT_RUN:			ys = 90;	break;
-	case	ACT_IDLE:			ys = 90;	break;
-	case	ACT_RANGE_ATTACK1:	ys = 90;	break;
-	default:
-		ys = 90;
-		break;
+		switch (m_Activity)
+		{
+		case	ACT_WALK:			ys = 90;	break;
+		case	ACT_RUN:			ys = 90;	break;
+		case	ACT_IDLE:			ys = 90;	break;
+		case	ACT_RANGE_ATTACK1:	ys = 90;	break;
+		default:
+			ys = 90;
+			break;
+		}
 	}
+	else if (g_iSkillLevel == SKILL_MEDIUM)
+	{
+		switch (m_Activity)
+		{
+		case	ACT_WALK:			ys = 180;	break;
+		case	ACT_RUN:			ys = 180;	break;
+		case	ACT_IDLE:			ys = 180;	break;
+		case	ACT_RANGE_ATTACK1:	ys = 180;	break;
+		default:
+			ys = 180;
+			break;
+		}
+	}
+	else
+	{
+		switch (m_Activity)
+		{
+		case	ACT_WALK:			ys = 250;	break;
+		case	ACT_RUN:			ys = 250;	break;
+		case	ACT_IDLE:			ys = 250;	break;
+		case	ACT_RANGE_ATTACK1:	ys = 250;	break;
+		default:
+			ys = 250;
+			break;
+		} // end unq
 
 	pev->yaw_speed = ys;
 }
@@ -678,7 +716,16 @@ void CBullsquid :: Spawn()
 	m_bloodColor		= BLOOD_COLOR_GREEN;
 	pev->effects		= 0;
 	pev->health			= gSkillData.bullsquidHealth;
-	m_flFieldOfView		= 0.2;// indicates the width of this monster's forward view cone ( as a dotproduct result )
+	if (g_iSkillLevel != SKILL_EASY) //start unq
+	{
+		m_flFieldOfView = VIEW_FIELD_WIDE;// unq - change to +- 135 degrees (-0.7)
+		SQUID_SPRINT_DIST = 512; // new sprint distance 
+	}
+	else
+	{
+		m_flFieldOfView = 0.2; // original FOV (+- 78 degrees)// indicates the width of this monster's forward view cone ( as a dotproduct result )
+		SQUID_SPRINT_DIST = 256; // original sprint distance
+	} //end unq
 	m_MonsterState		= MONSTERSTATE_NONE;
 
 	m_fCanThreatDisplay	= TRUE;
@@ -793,7 +840,18 @@ void CBullsquid :: RunAI ( void )
 		// chasing enemy. Sprint for last bit
 		if ( (pev->origin - m_hEnemy->pev->origin).Length2D() < SQUID_SPRINT_DIST )
 		{
-			pev->framerate = 1.25;
+			if (g_iSkillLevel == SKILL_EASY) //begin unq - speed up sprint
+			{
+				pev->framerate = 1.25; // original speed
+			}
+			else if (g_iSkillLevel == SKILL_MEDIUM)
+			{
+				pev->framerate = 1.5;
+			}
+			else
+			{
+				pev->framerate = 2.0; //speed him way up on hard!
+			} // end unq
 		}
 	}
 
