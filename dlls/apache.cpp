@@ -540,8 +540,8 @@ void CApache :: HuntThink( void )
 		}
 
 		// don't fire rockets and gun on easy mode
-		if (g_iSkillLevel == SKILL_EASY)
-			m_flNextRocket = gpGlobals->time + 10.0;
+		//if (g_iSkillLevel == SKILL_EASY)
+		//	m_flNextRocket = gpGlobals->time + 10.0; //unq - yes please do shoot things in the general direction of the player on easy
 	}
 
 	UTIL_MakeAimVectors( pev->angles );
@@ -830,7 +830,11 @@ BOOL CApache :: FireGun( )
 	if (DotProduct( vecGun, vecTarget ) > 0.98)
 	{
 #if 1
-		FireBullets( 1, posGun, vecGun, VECTOR_CONE_4DEGREES, 8192, BULLET_MONSTER_12MM, 1 );
+		//FireBullets( 1, posGun, vecGun, VECTOR_CONE_4DEGREES, 8192, BULLET_MONSTER_12MM, 1 );
+		if (g_iSkillLevel == SKILL_EASY) //unq - improve apache's accuracy (evil)
+			FireBullets(1, posGun, vecGun, VECTOR_CONE_4DEGREES, 8192, BULLET_MONSTER_12MM, 1);
+		else
+			FireBullets(1, posGun, vecGun, VECTOR_CONE_2DEGREES, 8192, BULLET_MONSTER_12MM, 1); // end unq
 		EMIT_SOUND(ENT(pev), CHAN_WEAPON, "turret/tu_fire1.wav", 1, 0.3);
 #else
 		static float flNext;
@@ -929,6 +933,8 @@ void CApache::TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vecDir
 	{
 		// do half damage in the body
 		// AddMultiDamage( pevAttacker, this, flDamage / 2.0, bitsDamageType );
+		if (g_iSkillLevel != SKILL_EASY) // unq
+			AddMultiDamage(pevAttacker, this, flDamage / 2.0, bitsDamageType); // discount 1/2 of the damage - end unq
 		UTIL_Ricochet( ptr->vecEndPos, 2.0 );
 	}
 }
