@@ -29,6 +29,7 @@
 #define SF_SPRITE_STARTON		0x0001
 #define SF_SPRITE_ONCE			0x0002
 #define SF_SPRITE_TEMPORARY		0x8000
+#define SF_SPRITE_TRANSITION	0x0004 //unq added for sprite across level transitions
 
 class CSprite : public CPointEntity
 {
@@ -38,6 +39,8 @@ public:
 
 	int		ObjectCaps( void )
 	{ 
+		if (pev->spawnflags & SF_SPRITE_TRANSITION)
+			return (CBaseEntity::ObjectCaps() & FCAP_ACROSS_TRANSITION); //unq added for SCRAM sprites
 		int flags = 0;
 		if ( pev->spawnflags & SF_SPRITE_TEMPORARY )
 			flags = FCAP_DONT_SAVE;
