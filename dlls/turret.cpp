@@ -860,6 +860,12 @@ void CBaseTurret::SetTurretAnim(TURRET_ANIM anim)
 
 		switch(anim)
 		{
+		case TURRET_ANIM_DEPLOY: // unq added to speed up deploy
+			if (g_iSkillLevel == SKILL_MEDIUM) // unq - speed up on med & hard
+				pev->framerate = 1.5;
+			else if (g_iSkillLevel == SKILL_HARD)
+				pev->framerate = 2.0;
+			break; // end unq
 		case TURRET_ANIM_RETIRE:
 			pev->frame			= 255;
 			pev->framerate		= -1.0;
