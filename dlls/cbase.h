@@ -26,6 +26,14 @@ CBaseEntity
 				CBaseGroup
 */
 
+// unq LRC - add bits for skill setting in map, from Spirit
+
+#define LF_NOTEASY				(1<<0)
+#define LF_NOTMEDIUM			(1<<1)
+#define LF_NOTHARD				(1<<2)
+
+// end unq LRC Spirit
+
 #define		MAX_PATH_SIZE	10 // max number of nodes available for a path.
 
 // These are caps bits to indicate what an object's capabilities (currently used for save/restore and level transitions)
@@ -136,6 +144,8 @@ public:
 	// pointers to engine data
 	entvars_t *pev;		// Don't need to save/restore this pointer, the engine resets it
 
+	int	m_iLFlags; // unq LRC Spirit - a new set of flags. (pev->spawnflags and pev->flags are full...)
+
 	// path corners
 	CBaseEntity			*m_pGoalEnt;// path corner we are heading towards
 	CBaseEntity			*m_pLink;// used for temporary link-list operations. 
@@ -143,7 +153,16 @@ public:
 	// initialization functions
 	virtual void	Spawn( void ) { return; }
 	virtual void	Precache( void ) { return; }
-	virtual void	KeyValue( KeyValueData* pkvd) { pkvd->fHandled = FALSE; }
+	//virtual void	KeyValue( KeyValueData* pkvd) { pkvd->fHandled = FALSE; } // unq LRC Spirit comment out original
+	virtual void	KeyValue(KeyValueData* pkvd) // unq LRC Spirit start
+	{
+		if (FStrEq(pkvd->szKeyName, "skill"))
+		{
+			m_iLFlags = atoi(pkvd->szValue);
+			pkvd->fHandled = TRUE;
+		}
+		else pkvd->fHandled = FALSE;
+	} // unq LRC Spirit end
 	virtual int		Save( CSave &save );
 	virtual int		Restore( CRestore &restore );
 	virtual int		ObjectCaps( void ) { return FCAP_ACROSS_TRANSITION; }

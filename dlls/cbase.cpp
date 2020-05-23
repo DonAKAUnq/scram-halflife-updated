@@ -20,6 +20,8 @@
 #include	"decals.h"
 #include	"gamerules.h"
 #include	"game.h"
+#include	"skill.h" // unq LRC Spirit, for skill check
+
 
 void EntvarsKeyvalue( entvars_t *pev, KeyValueData *pkvd );
 
@@ -149,6 +151,12 @@ int DispatchSpawn( edict_t *pent )
 				return -1;	// return that this entity should be deleted
 			if ( pEntity->pev->flags & FL_KILLME )
 				return -1;
+			if (g_iSkillLevel == SKILL_EASY && pEntity->m_iLFlags & LF_NOTEASY)
+				return -1; //LRC - unq Spirit
+			if (g_iSkillLevel == SKILL_MEDIUM && pEntity->m_iLFlags & LF_NOTMEDIUM)
+				return -1; //LRC - unq Spirit
+			if (g_iSkillLevel == SKILL_HARD && pEntity->m_iLFlags & LF_NOTHARD)
+				return -1; //LRC - unq Spirit
 		}
 
 
@@ -579,6 +587,8 @@ CBaseEntity *CBaseEntity::GetNextTarget( void )
 TYPEDESCRIPTION	CBaseEntity::m_SaveData[] = 
 {
 	DEFINE_FIELD( CBaseEntity, m_pGoalEnt, FIELD_CLASSPTR ),
+
+	DEFINE_FIELD(CBaseEntity, m_iLFlags, FIELD_INTEGER), //LRC unq add from Spirit
 
 	DEFINE_FIELD( CBaseEntity, m_pfnThink, FIELD_FUNCTION ),		// UNDONE: Build table of these!!!
 	DEFINE_FIELD( CBaseEntity, m_pfnTouch, FIELD_FUNCTION ),
