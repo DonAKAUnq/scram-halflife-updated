@@ -136,6 +136,27 @@ struct skilldata_t
 	float plrStomach;
 	float plrLeg;
 	float plrArm;
+
+// ammo allotments - added by unq
+	float ammoUraniumMaxCarry;
+	float ammo9mmMaxCarry;
+	float ammo357MaxCarry;
+	float ammoBuckshotMaxCarry;
+	float ammoBoltMaxCarry;
+	float ammoRocketMaxCarry;
+	float ammoHandGrenadeMaxCarry;
+	float ammoSatchelMaxCarry;
+	float ammoTripMineMaxCarry;
+	float ammoSnarkMaxCarry;
+	float ammoHornetMaxCarry;
+	float ammoM203GrenadeMaxCarry;
+	float clipMP5Size;
+	float clipHandGrenadeSize;
+	float clip9mmSize;
+	float clipUraniumSize;
+	float clipSnarkSize;
+
+// end unq
 };
 
 extern	DLL_GLOBAL	skilldata_t	gSkillData;

@@ -81,7 +81,7 @@ int CHgun::AddToPlayer( CBasePlayer *pPlayer )
 		if ( g_pGameRules->IsMultiplayer() )
 		{
 			// in multiplayer, all hivehands come full. 
-			pPlayer->m_rgAmmo[ PrimaryAmmoIndex() ] = HORNET_MAX_CARRY;
+			pPlayer->m_rgAmmo[PrimaryAmmoIndex()] = gSkillData.ammoHornetMaxCarry; // unq replace HORNET_MAX_CARRY
 		}
 #endif
 
@@ -97,7 +97,8 @@ int CHgun::GetItemInfo(ItemInfo *p)
 {
 	p->pszName = STRING(pev->classname);
 	p->pszAmmo1 = "Hornets";
-	p->iMaxAmmo1 = HORNET_MAX_CARRY;
+	//p->iMaxAmmo1 = HORNET_MAX_CARRY; // unq
+	p->iMaxAmmo1 = gSkillData.ammoHornetMaxCarry; // unq
 	p->pszAmmo2 = NULL;
 	p->iMaxAmmo2 = -1;
 	p->iMaxClip = WEAPON_NOCLIP;
@@ -264,10 +265,10 @@ void CHgun::SecondaryAttack( void )
 
 void CHgun::Reload( void )
 {
-	if (m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] >= HORNET_MAX_CARRY)
+	if (m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] >= gSkillData.ammoHornetMaxCarry) // unq replace HORNET_MAX_CARRY
 		return;
 
-	while (m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] < HORNET_MAX_CARRY && m_flRechargeTime < gpGlobals->time)
+	while (m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] < gSkillData.ammoHornetMaxCarry && m_flRechargeTime < gpGlobals->time) // unq replace HORNET_MAX_CARRY
 	{
 		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
 		m_flRechargeTime += 0.5;

@@ -21,6 +21,9 @@
 #include "nodes.h"
 #include "player.h"
 
+extern DLL_GLOBAL int g_iSkillLevel; //unq
+float flGlockSpread; // unq - added to control accuracy
+
 enum glock_e {
 	GLOCK_IDLE1 = 0,
 	GLOCK_IDLE2,
@@ -74,7 +77,8 @@ int CGlock::GetItemInfo(ItemInfo *p)
 {
 	p->pszName = STRING(pev->classname);
 	p->pszAmmo1 = "9mm";
-	p->iMaxAmmo1 = _9MM_MAX_CARRY;
+	//	p->iMaxAmmo1 = _9MM_MAX_CARRY; // unq
+	p->iMaxAmmo1 = gSkillData.ammo9mmMaxCarry; // unq
 	p->pszAmmo2 = NULL;
 	p->iMaxAmmo2 = -1;
 	p->iMaxClip = GLOCK_MAX_CLIP;
@@ -83,6 +87,13 @@ int CGlock::GetItemInfo(ItemInfo *p)
 	p->iFlags = 0;
 	p->iId = m_iId = WEAPON_GLOCK;
 	p->iWeight = GLOCK_WEIGHT;
+
+	if (g_iSkillLevel == SKILL_EASY) // unq - add calc of spread
+		flGlockSpread = 0.01; // original spread
+	else if (g_iSkillLevel == SKILL_MEDIUM)
+		flGlockSpread = 0.02;
+	else
+		flGlockSpread = 0.05; // end unq - damn hard
 
 	return 1;
 }
@@ -95,12 +106,12 @@ BOOL CGlock::Deploy( )
 
 void CGlock::SecondaryAttack( void )
 {
-	GlockFire( 0.1, 0.2, FALSE );
+	GlockFire( flGlockSpread, 0.2, FALSE ); // unq - change to variable flGlockSpread
 }
 
 void CGlock::PrimaryAttack( void )
 {
-	GlockFire( 0.01, 0.3, TRUE );
+	GlockFire( flGlockSpread, 0.3, TRUE ); // unq - change from fixed 0.01 to variable flGlockSpread
 }
 
 void CGlock::GlockFire( float flSpread , float flCycleTime, BOOL fUseAutoAim )
@@ -179,9 +190,9 @@ void CGlock::Reload( void )
 	int iResult;
 
 	if (m_iClip == 0)
-		iResult = DefaultReload( 17, GLOCK_RELOAD, 1.5 );
+		iResult = DefaultReload( gSkillData.clip9mmSize, GLOCK_RELOAD, 1.5 ); // unq replace hard-coded 17
 	else
-		iResult = DefaultReload( 17, GLOCK_RELOAD_NOT_EMPTY, 1.5 );
+		iResult = DefaultReload(gSkillData.clip9mmSize, GLOCK_RELOAD_NOT_EMPTY, 1.5 ); // unq replace hard-coded 17
 
 	if (iResult)
 	{
@@ -247,7 +258,7 @@ class CGlockAmmo : public CBasePlayerAmmo
 	}
 	BOOL AddAmmo( CBaseEntity *pOther ) 
 	{ 
-		if (pOther->GiveAmmo( AMMO_GLOCKCLIP_GIVE, "9mm", _9MM_MAX_CARRY ) != -1)
+		if (pOther->GiveAmmo(gSkillData.clip9mmSize, "9mm", gSkillData.ammo9mmMaxCarry) != -1) // unq replace AMMO_GLOCKCLIP_GIVE (equal to GLOCK_MAX_CLIP) and _9MM_MAX_CARRY
 		{
 			EMIT_SOUND(ENT(pev), CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM);
 			return TRUE;

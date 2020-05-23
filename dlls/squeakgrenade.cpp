@@ -420,7 +420,7 @@ void CSqueak::Spawn( )
 
 	FallInit();//get ready to fall down.
 
-	m_iDefaultAmmo = SNARK_DEFAULT_GIVE;
+	m_iDefaultAmmo = gSkillData.clipSnarkSize; // unq replace SNARK_DEFAULT_GIVE
 		
 	pev->sequence = 1;
 	pev->animtime = gpGlobals->time;
@@ -445,7 +445,8 @@ int CSqueak::GetItemInfo(ItemInfo *p)
 {
 	p->pszName = STRING(pev->classname);
 	p->pszAmmo1 = "Snarks";
-	p->iMaxAmmo1 = SNARK_MAX_CARRY;
+	//	p->iMaxAmmo1 = SNARK_MAX_CARRY; // unq
+	p->iMaxAmmo1 = gSkillData.ammoSnarkMaxCarry; // unq
 	p->pszAmmo2 = NULL;
 	p->iMaxAmmo2 = -1;
 	p->iMaxClip = WEAPON_NOCLIP;

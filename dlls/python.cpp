@@ -22,6 +22,9 @@
 #include "player.h"
 #include "gamerules.h"
 
+extern DLL_GLOBAL int g_iSkillLevel; //unq
+
+Vector PYTHON_ACCURACY; // unq - add to vary by difficulty
 
 enum python_e {
 	PYTHON_IDLE1 = 0,
@@ -41,7 +44,8 @@ int CPython::GetItemInfo(ItemInfo *p)
 {
 	p->pszName = STRING(pev->classname);
 	p->pszAmmo1 = "357";
-	p->iMaxAmmo1 = _357_MAX_CARRY;
+	//p->iMaxAmmo1 = _357_MAX_CARRY; // unq - original
+	p->iMaxAmmo1 = gSkillData.ammo357MaxCarry; // unq
 	p->pszAmmo2 = NULL;
 	p->iMaxAmmo2 = -1;
 	p->iMaxClip = PYTHON_MAX_CLIP;
@@ -50,6 +54,13 @@ int CPython::GetItemInfo(ItemInfo *p)
 	p->iPosition = 1;
 	p->iId = m_iId = WEAPON_PYTHON;
 	p->iWeight = PYTHON_WEIGHT;
+
+	if (g_iSkillLevel == SKILL_EASY) // unq - add calc of spread
+		PYTHON_ACCURACY = VECTOR_CONE_1DEGREES; // original spread
+	else if (g_iSkillLevel == SKILL_MEDIUM)
+		PYTHON_ACCURACY = VECTOR_CONE_2DEGREES;
+	else
+		PYTHON_ACCURACY = VECTOR_CONE_3DEGREES; // end unq
 
 	return 1;
 }
@@ -195,7 +206,7 @@ void CPython::PrimaryAttack()
 	Vector vecAiming = m_pPlayer->GetAutoaimVector( AUTOAIM_10DEGREES );
 
 	Vector vecDir;
-	vecDir = m_pPlayer->FireBulletsPlayer( 1, vecSrc, vecAiming, VECTOR_CONE_1DEGREES, 8192, BULLET_PLAYER_357, 0, 0, m_pPlayer->pev, m_pPlayer->random_seed );
+	vecDir = m_pPlayer->FireBulletsPlayer(1, vecSrc, vecAiming, PYTHON_ACCURACY, 8192, BULLET_PLAYER_357, 0, 0, m_pPlayer->pev, m_pPlayer->random_seed); // unq - changed from VECTOR_CONE_1DEGREES
 
     int flags;
 #if defined( CLIENT_WEAPONS )
@@ -295,7 +306,7 @@ class CPythonAmmo : public CBasePlayerAmmo
 	}
 	BOOL AddAmmo( CBaseEntity *pOther ) 
 	{ 
-		if (pOther->GiveAmmo( AMMO_357BOX_GIVE, "357", _357_MAX_CARRY ) != -1)
+		if (pOther->GiveAmmo(AMMO_357BOX_GIVE, "357", gSkillData.ammo357MaxCarry) != -1) // unq replace _357_MAX_CARRY
 		{
 			EMIT_SOUND(ENT(pev), CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM);
 			return TRUE;

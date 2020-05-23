@@ -303,6 +303,27 @@ void CGameRules::RefreshSkillData ( void )
 	gSkillData.plrLeg = GetSkillCvar( "sk_player_leg" );
 	gSkillData.plrArm = GetSkillCvar( "sk_player_arm" );
 	
+	// AMMO ALLOTMENTS - ADDED BY UNQ
+	gSkillData.ammoUraniumMaxCarry = GetSkillCvar("sk_ammo_uranium");
+	gSkillData.ammo9mmMaxCarry = GetSkillCvar("sk_ammo_9mm");
+	gSkillData.ammo357MaxCarry = GetSkillCvar("sk_ammo_357");
+	gSkillData.ammoBuckshotMaxCarry = GetSkillCvar("sk_ammo_buckshot");
+	gSkillData.ammoBoltMaxCarry = GetSkillCvar("sk_ammo_bolt");
+	gSkillData.ammoRocketMaxCarry = GetSkillCvar("sk_ammo_rocket");
+	gSkillData.ammoHandGrenadeMaxCarry = GetSkillCvar("sk_ammo_handgrenade");
+	gSkillData.ammoSatchelMaxCarry = GetSkillCvar("sk_ammo_satchel");
+	gSkillData.ammoTripMineMaxCarry = GetSkillCvar("sk_ammo_tripmine");
+	gSkillData.ammoSnarkMaxCarry = GetSkillCvar("sk_ammo_snark");
+	gSkillData.ammoHornetMaxCarry = GetSkillCvar("sk_ammo_hornet");
+	gSkillData.ammoM203GrenadeMaxCarry = GetSkillCvar("sk_ammo_m203");
+	gSkillData.clipMP5Size = GetSkillCvar("sk_clip_mp5");
+	gSkillData.clipHandGrenadeSize = GetSkillCvar("sk_clip_handgrenade");
+	gSkillData.clip9mmSize = GetSkillCvar("sk_clip_9mm");
+	gSkillData.clipUraniumSize = GetSkillCvar("sk_clip_uranium");
+	gSkillData.clipSnarkSize = GetSkillCvar("sk_clip_snark");
+
+	// end unq
+
 	// Osprey - added by unq
 	gSkillData.ospreyHealth = GetSkillCvar("sk_osprey_health");
 	// end unq

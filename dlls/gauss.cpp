@@ -111,7 +111,8 @@ int CGauss::GetItemInfo(ItemInfo *p)
 {
 	p->pszName = STRING(pev->classname);
 	p->pszAmmo1 = "uranium";
-	p->iMaxAmmo1 = URANIUM_MAX_CARRY;
+	//	p->iMaxAmmo1 = URANIUM_MAX_CARRY; // unq
+	p->iMaxAmmo1 = gSkillData.ammoUraniumMaxCarry; // unq replace URANIUM_MAX_CARRY
 	p->pszAmmo2 = NULL;
 	p->iMaxAmmo2 = -1;
 	p->iMaxClip = WEAPON_NOCLIP;
@@ -610,7 +611,7 @@ class CGaussAmmo : public CBasePlayerAmmo
 	}
 	BOOL AddAmmo( CBaseEntity *pOther ) 
 	{ 
-		if (pOther->GiveAmmo( AMMO_URANIUMBOX_GIVE, "uranium", URANIUM_MAX_CARRY ) != -1)
+		if (pOther->GiveAmmo(gSkillData.clipUraniumSize, "uranium", gSkillData.ammoUraniumMaxCarry) != -1) // unq - replace AMMO_URANIUMBOX_GIVE and URANIUM_MAX_CARRY
 		{
 			EMIT_SOUND(ENT(pev), CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM);
 			return TRUE;

@@ -94,10 +94,13 @@ int CMP5::GetItemInfo(ItemInfo *p)
 {
 	p->pszName = STRING(pev->classname);
 	p->pszAmmo1 = "9mm";
-	p->iMaxAmmo1 = _9MM_MAX_CARRY;
+	//	p->iMaxAmmo1 = _9MM_MAX_CARRY; // unq
+	p->iMaxAmmo1 = gSkillData.ammo9mmMaxCarry; // unq replace _9MM_MAX_CARRY
 	p->pszAmmo2 = "ARgrenades";
-	p->iMaxAmmo2 = M203_GRENADE_MAX_CARRY;
-	p->iMaxClip = MP5_MAX_CLIP;
+	//	p->iMaxAmmo2 = M203_GRENADE_MAX_CARRY;
+	p->iMaxAmmo2 = gSkillData.ammoM203GrenadeMaxCarry; // unq
+	//	p->iMaxClip = MP5_MAX_CLIP; // unq
+	p->iMaxClip = gSkillData.clipMP5Size; // unq replace MP5_MAX_CLIP
 	p->iSlot = 2;
 	p->iPosition = 0;
 	p->iFlags = 0;
@@ -252,7 +255,7 @@ void CMP5::Reload( void )
 	if ( m_pPlayer->ammo_9mm <= 0 )
 		return;
 
-	DefaultReload( MP5_MAX_CLIP, MP5_RELOAD, 1.5 );
+	DefaultReload(gSkillData.clipMP5Size, MP5_RELOAD, 1.5); // unq replace MP5_MAX_CLIP
 }
 
 
@@ -300,7 +303,7 @@ class CMP5AmmoClip : public CBasePlayerAmmo
 	}
 	BOOL AddAmmo( CBaseEntity *pOther ) 
 	{ 
-		int bResult = (pOther->GiveAmmo( AMMO_MP5CLIP_GIVE, "9mm", _9MM_MAX_CARRY) != -1);
+		int bResult = (pOther->GiveAmmo(gSkillData.clipMP5Size, "9mm", gSkillData.ammo9mmMaxCarry) != -1); // unq replace AMMO_MP5CLIP_GIVE (equal to MP5_MAX_CLIP) and _9MM_MAX_CARRY
 		if (bResult)
 		{
 			EMIT_SOUND(ENT(pev), CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM);
@@ -328,7 +331,7 @@ class CMP5Chainammo : public CBasePlayerAmmo
 	}
 	BOOL AddAmmo( CBaseEntity *pOther ) 
 	{ 
-		int bResult = (pOther->GiveAmmo( AMMO_CHAINBOX_GIVE, "9mm", _9MM_MAX_CARRY) != -1);
+		int bResult = (pOther->GiveAmmo(AMMO_CHAINBOX_GIVE, "9mm", gSkillData.ammo9mmMaxCarry) != -1); // unq replace _9MM_MAX_CARRY
 		if (bResult)
 		{
 			EMIT_SOUND(ENT(pev), CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM);
@@ -354,7 +357,7 @@ class CMP5AmmoGrenade : public CBasePlayerAmmo
 	}
 	BOOL AddAmmo( CBaseEntity *pOther ) 
 	{ 
-		int bResult = (pOther->GiveAmmo( AMMO_M203BOX_GIVE, "ARgrenades", M203_GRENADE_MAX_CARRY ) != -1);
+		int bResult = (pOther->GiveAmmo(AMMO_M203BOX_GIVE, "ARgrenades", gSkillData.ammoM203GrenadeMaxCarry) != -1); // unq replace M203_GRENADE_MAX_CARRY
 
 		if (bResult)
 		{

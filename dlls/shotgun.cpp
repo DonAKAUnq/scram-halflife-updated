@@ -96,7 +96,8 @@ int CShotgun::GetItemInfo(ItemInfo *p)
 {
 	p->pszName = STRING(pev->classname);
 	p->pszAmmo1 = "buckshot";
-	p->iMaxAmmo1 = BUCKSHOT_MAX_CARRY;
+	//	p->iMaxAmmo1 = BUCKSHOT_MAX_CARRY; // unq
+	p->iMaxAmmo1 = gSkillData.ammoBuckshotMaxCarry; // unq
 	p->pszAmmo2 = NULL;
 	p->iMaxAmmo2 = -1;
 	p->iMaxClip = SHOTGUN_MAX_CLIP;
@@ -388,7 +389,7 @@ class CShotgunAmmo : public CBasePlayerAmmo
 	}
 	BOOL AddAmmo( CBaseEntity *pOther ) 
 	{ 
-		if (pOther->GiveAmmo( AMMO_BUCKSHOTBOX_GIVE, "buckshot", BUCKSHOT_MAX_CARRY ) != -1)
+		if (pOther->GiveAmmo(AMMO_BUCKSHOTBOX_GIVE, "buckshot", gSkillData.ammoBuckshotMaxCarry) != -1) // unq replace BUCKSHOT_MAX_CARRY
 		{
 			EMIT_SOUND(ENT(pev), CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM);
 			return TRUE;

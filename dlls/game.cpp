@@ -456,6 +456,78 @@ cvar_t	sk_osprey_health3 = { "sk_osprey_health3","400" };
 
 // end unq - osprey
 
+// begin unq - Cvars for ammo capacities
+
+cvar_t	sk_ammo_uranium1 = { "sk_ammo_uranium1","100" };
+cvar_t	sk_ammo_uranium2 = { "sk_ammo_uranium2","100" };
+cvar_t	sk_ammo_uranium3 = { "sk_ammo_uranium3","100" };
+
+cvar_t	sk_ammo_9mm1 = { "sk_ammo_9mm1","250" };
+cvar_t	sk_ammo_9mm2 = { "sk_ammo_9mm2","250" };
+cvar_t	sk_ammo_9mm3 = { "sk_ammo_9mm3","250" };
+
+cvar_t	sk_ammo_3571 = { "sk_ammo_3571","36" };
+cvar_t	sk_ammo_3572 = { "sk_ammo_3572","36" };
+cvar_t	sk_ammo_3573 = { "sk_ammo_3573","36" };
+
+cvar_t	sk_ammo_buckshot1 = { "sk_ammo_buckshot1","125" };
+cvar_t	sk_ammo_buckshot2 = { "sk_ammo_buckshot2","125" };
+cvar_t	sk_ammo_buckshot3 = { "sk_ammo_buckshot3","125" };
+
+cvar_t	sk_ammo_bolt1 = { "sk_ammo_bolt1","50" };
+cvar_t	sk_ammo_bolt2 = { "sk_ammo_bolt2","50" };
+cvar_t	sk_ammo_bolt3 = { "sk_ammo_bolt3","50" };
+
+cvar_t	sk_ammo_rocket1 = { "sk_ammo_rocket1","5" };
+cvar_t	sk_ammo_rocket2 = { "sk_ammo_rocket2","5" };
+cvar_t	sk_ammo_rocket3 = { "sk_ammo_rocket3","5" };
+
+cvar_t	sk_ammo_handgrenade1 = { "sk_ammo_handgrenade1","10" };
+cvar_t	sk_ammo_handgrenade2 = { "sk_ammo_handgrenade2","10" };
+cvar_t	sk_ammo_handgrenade3 = { "sk_ammo_handgrenade3","10" };
+
+cvar_t	sk_ammo_satchel1 = { "sk_ammo_satchel1","5" };
+cvar_t	sk_ammo_satchel2 = { "sk_ammo_satchel2","5" };
+cvar_t	sk_ammo_satchel3 = { "sk_ammo_satchel3","5" };
+
+cvar_t	sk_ammo_tripmine1 = { "sk_ammo_tripmine1","5" };
+cvar_t	sk_ammo_tripmine2 = { "sk_ammo_tripmine2","5" };
+cvar_t	sk_ammo_tripmine3 = { "sk_ammo_tripmine3","5" };
+
+cvar_t	sk_ammo_snark1 = { "sk_ammo_snark1","15" };
+cvar_t	sk_ammo_snark2 = { "sk_ammo_snark2","15" };
+cvar_t	sk_ammo_snark3 = { "sk_ammo_snark3","15" };
+
+cvar_t	sk_ammo_hornet1 = { "sk_ammo_hornet1","8" };
+cvar_t	sk_ammo_hornet2 = { "sk_ammo_hornet2","8" };
+cvar_t	sk_ammo_hornet3 = { "sk_ammo_hornet3","8" };
+
+cvar_t	sk_ammo_m2031 = { "sk_ammo_m2031","10" };
+cvar_t	sk_ammo_m2032 = { "sk_ammo_m2032","10" };
+cvar_t	sk_ammo_m2033 = { "sk_ammo_m2033","10" };
+
+cvar_t	sk_clip_mp51 = { "sk_clip_mp51","50" };
+cvar_t	sk_clip_mp52 = { "sk_clip_mp52","50" };
+cvar_t	sk_clip_mp53 = { "sk_clip_mp53","50" };
+
+cvar_t	sk_clip_handgrenade1 = { "sk_clip_handgrenade1","5" };
+cvar_t	sk_clip_handgrenade2 = { "sk_clip_handgrenade2","5" };
+cvar_t	sk_clip_handgrenade3 = { "sk_clip_handgrenade3","5" };
+
+cvar_t	sk_clip_9mm1 = { "sk_clip_9mm1","17" };
+cvar_t	sk_clip_9mm2 = { "sk_clip_9mm2","17" };
+cvar_t	sk_clip_9mm3 = { "sk_clip_9mm3","17" };
+
+cvar_t	sk_clip_uranium1 = { "sk_clip_uranium1","20" };
+cvar_t	sk_clip_uranium2 = { "sk_clip_uranium2","20" };
+cvar_t	sk_clip_uranium3 = { "sk_clip_uranium3","20" };
+
+cvar_t	sk_clip_snark1 = { "sk_clip_snark1","5" };
+cvar_t	sk_clip_snark2 = { "sk_clip_snark2","5" };
+cvar_t	sk_clip_snark3 = { "sk_clip_snark3","5" };
+
+// end unq - Cvars for ammo capacities
+
 // END Cvars for Skill Level settings
 
 // Register your console variables here
@@ -892,13 +964,85 @@ void GameDLLInit( void )
 	CVAR_REGISTER ( &sk_player_leg2 );
 	CVAR_REGISTER ( &sk_player_leg3 );
 
-	// unq - add osprey
+// unq - add osprey
 
 	CVAR_REGISTER(&sk_osprey_health1);
 	CVAR_REGISTER(&sk_osprey_health2);
 	CVAR_REGISTER(&sk_osprey_health3);
 
-	// end unq - osprey health
+// end unq - osprey health
+
+// begin unq - register ammo cvars
+
+	CVAR_REGISTER(&sk_ammo_uranium1);
+	CVAR_REGISTER(&sk_ammo_uranium2);
+	CVAR_REGISTER(&sk_ammo_uranium3);
+
+	CVAR_REGISTER(&sk_ammo_9mm1);
+	CVAR_REGISTER(&sk_ammo_9mm2);
+	CVAR_REGISTER(&sk_ammo_9mm3);
+
+	CVAR_REGISTER(&sk_ammo_3571);
+	CVAR_REGISTER(&sk_ammo_3572);
+	CVAR_REGISTER(&sk_ammo_3573);
+
+	CVAR_REGISTER(&sk_ammo_buckshot1);
+	CVAR_REGISTER(&sk_ammo_buckshot2);
+	CVAR_REGISTER(&sk_ammo_buckshot3);
+
+	CVAR_REGISTER(&sk_ammo_bolt1);
+	CVAR_REGISTER(&sk_ammo_bolt2);
+	CVAR_REGISTER(&sk_ammo_bolt3);
+
+	CVAR_REGISTER(&sk_ammo_rocket1);
+	CVAR_REGISTER(&sk_ammo_rocket2);
+	CVAR_REGISTER(&sk_ammo_rocket3);
+
+	CVAR_REGISTER(&sk_ammo_handgrenade1);
+	CVAR_REGISTER(&sk_ammo_handgrenade2);
+	CVAR_REGISTER(&sk_ammo_handgrenade3);
+
+	CVAR_REGISTER(&sk_ammo_satchel1);
+	CVAR_REGISTER(&sk_ammo_satchel2);
+	CVAR_REGISTER(&sk_ammo_satchel3);
+
+	CVAR_REGISTER(&sk_ammo_tripmine1);
+	CVAR_REGISTER(&sk_ammo_tripmine2);
+	CVAR_REGISTER(&sk_ammo_tripmine3);
+
+	CVAR_REGISTER(&sk_ammo_snark1);
+	CVAR_REGISTER(&sk_ammo_snark2);
+	CVAR_REGISTER(&sk_ammo_snark3);
+
+	CVAR_REGISTER(&sk_ammo_hornet1);
+	CVAR_REGISTER(&sk_ammo_hornet2);
+	CVAR_REGISTER(&sk_ammo_hornet3);
+
+	CVAR_REGISTER(&sk_ammo_m2031);
+	CVAR_REGISTER(&sk_ammo_m2032);
+	CVAR_REGISTER(&sk_ammo_m2033);
+
+	CVAR_REGISTER(&sk_clip_mp51);
+	CVAR_REGISTER(&sk_clip_mp52);
+	CVAR_REGISTER(&sk_clip_mp53);
+
+	CVAR_REGISTER(&sk_clip_handgrenade1);
+	CVAR_REGISTER(&sk_clip_handgrenade2);
+	CVAR_REGISTER(&sk_clip_handgrenade3);
+
+	CVAR_REGISTER(&sk_clip_9mm1);
+	CVAR_REGISTER(&sk_clip_9mm2);
+	CVAR_REGISTER(&sk_clip_9mm3);
+
+	CVAR_REGISTER(&sk_clip_uranium1);
+	CVAR_REGISTER(&sk_clip_uranium2);
+	CVAR_REGISTER(&sk_clip_uranium3);
+
+	CVAR_REGISTER(&sk_clip_snark1);
+	CVAR_REGISTER(&sk_clip_snark2);
+	CVAR_REGISTER(&sk_clip_snark3);
+
+// end unq - register ammo cvars
 
 // END REGISTER CVARS FOR SKILL LEVEL STUFF
 
