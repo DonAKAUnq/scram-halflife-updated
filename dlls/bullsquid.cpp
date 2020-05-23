@@ -27,6 +27,8 @@
 #include	"soundent.h"
 #include	"game.h"
 
+extern DLL_GLOBAL int g_iSkillLevel; //unq
+
 //#define		SQUID_SPRINT_DIST	256 // how close the squid has to get before starting to sprint and refusing to swerve //unq - remove as preprocessor, make as variable
 
 int			   SQUID_SPRINT_DIST; //unq
