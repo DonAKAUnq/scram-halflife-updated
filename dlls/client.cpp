@@ -40,6 +40,8 @@
 #include "netadr.h"
 #include "pm_shared.h"
 
+#include "globals.h" // richard & unq
+
 #if !defined ( _WIN32 )
 #include <ctype.h>
 #endif
@@ -697,6 +699,8 @@ void ServerDeactivate( void )
 
 	// Peform any shutdown operations here...
 	//
+	CVAR_SET_FLOAT("sv_maxtokens", 0.0f); // richard & unq
+
 }
 
 void ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )

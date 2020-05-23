@@ -530,6 +530,10 @@ cvar_t	sk_clip_snark3 = { "sk_clip_snark3","5" };
 
 // END Cvars for Skill Level settings
 
+extern cvar_t g_cvTokens; // richard & unq
+extern cvar_t g_cvTokensMax; // richard & unq
+extern cvar_t g_cvHideTokenHUD; // richard & unq
+
 // Register your console variables here
 // This gets called one time when the game is initialied
 void GameDLLInit( void )
@@ -563,6 +567,10 @@ void GameDLLInit( void )
 	CVAR_REGISTER (&allowmonsters);
 
 	CVAR_REGISTER (&mp_chattime);
+
+	CVAR_REGISTER(&g_cvTokens); //richard & unq
+	CVAR_REGISTER(&g_cvTokensMax); //richard & unq
+	CVAR_REGISTER(&g_cvHideTokenHUD); //richard & unq
 
 // REGISTER CVARS FOR SKILL LEVEL STUFF
 	// Agrunt

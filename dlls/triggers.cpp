@@ -27,6 +27,8 @@
 #include "saverestore.h"
 #include "trains.h"			// trigger_camera has train functionality
 #include "gamerules.h"
+#include "globals.h" // richard & unq
+
 
 #define	SF_TRIGGER_PUSH_START_OFF	2//spawnflag that makes trigger_push spawn turned OFF
 #define SF_TRIGGER_HURT_TARGETONCE	1// Only fire hurt target once
@@ -2428,3 +2430,116 @@ void CTriggerCamera::Move()
 	float fraction = 2 * gpGlobals->frametime;
 	pev->velocity = ((pev->movedir * pev->speed) * fraction) + (pev->velocity * (1-fraction));
 }
+// richard & unq, trigger_auto_countercheck
+class CAutoTriggerCounter : public CBaseDelay
+{
+public:
+	void KeyValue(KeyValueData* pkvd);
+	void Spawn(void);
+	void Precache(void);
+	void Think(void);
+
+	int ObjectCaps(void) { return CBaseDelay::ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
+	virtual int		Save(CSave& save);
+	virtual int		Restore(CRestore& restore);
+
+	static	TYPEDESCRIPTION m_SaveData[];
+
+private:
+	int			m_iCounterName;
+	int			m_iTriggerCond;
+	USE_TYPE			m_iTriggerState;
+	int			m_iCompVal;
+};
+LINK_ENTITY_TO_CLASS(trigger_auto_countercheck, CAutoTriggerCounter);
+
+TYPEDESCRIPTION	CAutoTriggerCounter::m_SaveData[] =
+{
+	DEFINE_FIELD(CAutoTriggerCounter, m_iCounterName, FIELD_STRING),
+	DEFINE_FIELD(CAutoTriggerCounter, m_iTriggerCond, FIELD_INTEGER),
+	DEFINE_FIELD(CAutoTriggerCounter, m_iTriggerState, FIELD_INTEGER),
+	DEFINE_FIELD(CAutoTriggerCounter, m_iCompVal, FIELD_INTEGER),
+};
+
+IMPLEMENT_SAVERESTORE(CAutoTriggerCounter, CBaseDelay);
+
+void CAutoTriggerCounter::KeyValue(KeyValueData* pkvd)
+{
+	if (FStrEq(pkvd->szKeyName, "countername"))
+	{
+		m_iCounterName = ALLOC_STRING(pkvd->szValue);
+		pkvd->fHandled = TRUE;
+	}
+	else if (FStrEq(pkvd->szKeyName, "triggercond"))
+	{
+		m_iTriggerCond = atoi(pkvd->szValue);
+		pkvd->fHandled = TRUE;
+	}
+	else if (FStrEq(pkvd->szKeyName, "triggerstate"))
+	{
+		int type = atoi(pkvd->szValue);
+		switch (type)
+		{
+		case 0:
+			m_iTriggerState = USE_OFF;
+			break;
+		case 2:
+			m_iTriggerState = USE_TOGGLE;
+			break;
+		default:
+			m_iTriggerState = USE_ON;
+			break;
+		}
+		pkvd->fHandled = TRUE;
+	}
+	else if (FStrEq(pkvd->szKeyName, "triggercomp"))
+	{
+		m_iCompVal = atoi(pkvd->szValue);
+		pkvd->fHandled = TRUE;
+	}
+	else
+		CBaseDelay::KeyValue(pkvd);
+}
+
+
+void CAutoTriggerCounter::Spawn(void)
+{
+	Precache();
+}
+
+
+void CAutoTriggerCounter::Precache(void)
+{
+	pev->nextthink = gpGlobals->time + 0.1;
+}
+
+
+void CAutoTriggerCounter::Think(void)
+{
+	if (!m_iCounterName)
+	{
+		SUB_UseTargets(this, m_iTriggerState, 0);
+		if (pev->spawnflags & SF_AUTO_FIREONCE)
+			UTIL_Remove(this);
+	}
+
+	if (m_iTriggerCond == 0)
+	{
+		if (CGlobalCounters::Instance()->EntityGetState(m_iCounterName) == m_iCompVal)
+			SUB_UseTargets(this, m_iTriggerState, 0);
+	}
+	else if (m_iTriggerCond == 1)
+	{
+		if (CGlobalCounters::Instance()->EntityGetState(m_iCounterName) < m_iCompVal)
+			SUB_UseTargets(this, m_iTriggerState, 0);
+	}
+	else if (m_iTriggerCond == 2)
+	{
+		if (CGlobalCounters::Instance()->EntityGetState(m_iCounterName) > m_iCompVal)
+			SUB_UseTargets(this, m_iTriggerState, 0);
+	}
+
+	if (pev->spawnflags & SF_AUTO_FIREONCE)
+		UTIL_Remove(this);
+}
+//end richard & unq

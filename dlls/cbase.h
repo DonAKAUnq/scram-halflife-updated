@@ -807,7 +807,13 @@ typedef struct _SelAmmo
 class CWorld : public CBaseEntity
 {
 public:
-	void Spawn( void );
-	void Precache( void );
-	void KeyValue( KeyValueData *pkvd );
+	void Spawn(void);
+	void Precache(void);
+	void KeyValue(KeyValueData* pkvd);
+	virtual int Save(CSave& save);	//richard & unq
+	virtual int Restore(CRestore& restore);	//richard & unq
+	static     TYPEDESCRIPTION m_SaveData[];	//richard & unq
+private:
+	int m_iNumTokens;	//richard & unq
+	int m_iMaxTokens;	//richard & unq
 };

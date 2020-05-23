@@ -25,6 +25,8 @@
 
 #include "cbase.h"
 
+#include "globals.h" // richard & unq
+
 // Holds engine functionality callbacks
 enginefuncs_t g_engfuncs;
 globalvars_t  *gpGlobals;
@@ -58,6 +60,7 @@ extern "C" void DLLEXPORT GiveFnptrsToDll(	enginefuncs_t* pengfuncsFromEngine, g
 {
 	memcpy(&g_engfuncs, pengfuncsFromEngine, sizeof(enginefuncs_t));
 	gpGlobals = pGlobals;
+    CGlobalCounters::Instance()->ClearStates(); // richard & unq
 }
 
 

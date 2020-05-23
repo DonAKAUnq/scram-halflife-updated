@@ -202,6 +202,21 @@ private:
 
 };
 
+// start richard & unq
+class CHudTokens : public CHudBase
+{
+public:
+	int Init(void);
+	int VidInit(void);
+	int Draw(float flTime);
+
+	void DrawNumbers(int iValue, int x, int y);
+
+private:
+	HSPRITE m_SpriteHandle_t;
+
+};
+// end richard & unq
 //
 //-----------------------------------------------------
 //
@@ -611,6 +626,7 @@ public:
 	CHudTextMessage m_TextMessage;
 	CHudStatusIcons m_StatusIcons;
 	CHudBenchmark	m_Benchmark;
+	CHudTokens		m_Tokens; //richard & unq
 
 	void Init( void );
 	void VidInit( void );

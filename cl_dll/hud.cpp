@@ -365,6 +365,7 @@ void CHud :: Init( void )
 	m_TextMessage.Init();
 	m_StatusIcons.Init();
 	GetClientVoiceMgr()->Init(&g_VoiceStatusHelper, (vgui::Panel**)&gViewPort);
+	m_Tokens.Init(); //richard & unq
 
 	m_Menu.Init();
 	
@@ -514,6 +515,7 @@ void CHud :: VidInit( void )
 	m_TextMessage.VidInit();
 	m_StatusIcons.VidInit();
 	GetClientVoiceMgr()->VidInit();
+	m_Tokens.VidInit(); // richard & unq
 }
 
 int CHud::MsgFunc_Logo(const char *pszName,  int iSize, void *pbuf)

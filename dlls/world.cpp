@@ -33,6 +33,11 @@
 #include "weapons.h"
 #include "gamerules.h"
 #include "teamplay_gamerules.h"
+#include "globals.h" // richard & unq
+
+cvar_t   g_cvTokens = { "sv_numtokens","0", FCVAR_SERVER | FCVAR_UNLOGGED };	// richard & unq
+cvar_t   g_cvTokensMax = { "sv_maxtokens","0", FCVAR_SERVER | FCVAR_UNLOGGED };  // richard & unq
+cvar_t   g_cvHideTokenHUD = { "r_hidetokenhud","0", FCVAR_SERVER };  // richard & unq
 
 extern CGraph WorldGraph;
 extern CSoundEnt *pSoundEnt;
@@ -437,6 +442,7 @@ void SaveGlobalState( SAVERESTOREDATA *pSaveData )
 {
 	CSave saveHelper( pSaveData );
 	gGlobalState.Save( saveHelper );
+	CGlobalCounters::Instance()->Save(saveHelper); // richard & unq
 }
 
 
@@ -444,12 +450,15 @@ void RestoreGlobalState( SAVERESTOREDATA *pSaveData )
 {
 	CRestore restoreHelper( pSaveData );
 	gGlobalState.Restore( restoreHelper );
+	CGlobalCounters::Instance()->Restore(restoreHelper); // richard & unq
 }
 
 
 void ResetGlobalState( void )
 {
 	gGlobalState.ClearStates();
+	CVAR_SET_FLOAT("sv_numtokens", 0.0f); // richard & unq
+	CVAR_SET_FLOAT("sv_maxtokens", 0.0f); // richard & unq
 	gInitHUD = TRUE;	// Init the HUD on a new game / load game
 }
 
@@ -468,6 +477,32 @@ LINK_ENTITY_TO_CLASS( worldspawn, CWorld );
 
 extern DLL_GLOBAL BOOL		g_fGameOver;
 float g_flWeaponCheat; 
+
+// start richard & unq
+
+TYPEDESCRIPTION CWorld::m_SaveData[] =
+{
+				DEFINE_FIELD(CWorld, m_iMaxTokens, FIELD_INTEGER),
+};
+
+int CWorld::Save(CSave& save)
+{
+	if (!CBaseEntity::Save(save))
+		return 0;
+	return save.WriteFields("CWorld", this, m_SaveData, ARRAYSIZE(m_SaveData));
+};
+
+int CWorld::Restore(CRestore& restore)
+{
+	if (!CBaseEntity::Restore(restore))
+		return 0;
+
+	int iRet = restore.ReadFields("CWorld", this, m_SaveData, ARRAYSIZE(m_SaveData));
+	CVAR_SET_FLOAT("sv_maxtokens", m_iMaxTokens);
+	return iRet;
+};
+
+// end richard & unq
 
 void CWorld :: Spawn( void )
 {
@@ -737,6 +772,13 @@ void CWorld :: KeyValue( KeyValueData *pkvd )
 		}
 		pkvd->fHandled = TRUE;
 	}
+	else if (FStrEq(pkvd->szKeyName, "numtokens")) // richard & unq
+	{
+		CVAR_SET_FLOAT("sv_maxtokens", (float)atoi(pkvd->szValue));
+		m_iMaxTokens = (float)atoi(pkvd->szValue);
+
+		pkvd->fHandled = TRUE;
+	} // end richard & unq
 	else
 		CBaseEntity::KeyValue( pkvd );
 }

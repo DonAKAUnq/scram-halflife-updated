@@ -229,6 +229,7 @@ EXIT /B 0</Command>
     <ClInclude Include="..\..\dlls\flyingmonster.h" />
     <ClInclude Include="..\..\dlls\func_break.h" />
     <ClInclude Include="..\..\dlls\gamerules.h" />
+    <ClInclude Include="..\..\dlls\globals.h" />
     <ClInclude Include="..\..\dlls\hornet.h" />
     <ClInclude Include="..\..\dlls\items.h" />
     <ClInclude Include="..\..\dlls\monsterevent.h" />
