@@ -326,6 +326,8 @@ void CGameRules::RefreshSkillData ( void )
 
 	// Osprey - added by unq
 	gSkillData.ospreyHealth = GetSkillCvar("sk_osprey_health");
+	// Tentacle - added by unq
+	gSkillData.tentacleHealth = GetSkillCvar("sk_tentacle_health");
 	// end unq
 
 }

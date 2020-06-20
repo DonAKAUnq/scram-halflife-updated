@@ -254,7 +254,8 @@ void CTentacle :: Spawn( )
 	pev->solid			= SOLID_BBOX;
 	pev->movetype		= MOVETYPE_FLY;
 	pev->effects		= 0;
-	pev->health			= 75;
+	//pev->health			= 75; // unq original
+	pev->health			= gSkillData.tentacleHealth; // unq variable
 	pev->sequence		= 0;
 
 	SET_MODEL(ENT(pev), "models/tentacle2.mdl");
@@ -561,7 +562,8 @@ void CTentacle :: Cycle( void )
 			m_iGoalAnim = TENTACLE_ANIM_Pit_Idle;
 			if (pev->sequence == TENTACLE_ANIM_Pit_Idle)
 			{
-				pev->health = 75;
+				// pev->health = 75; // unq - original
+				pev->health = gSkillData.tentacleHealth; //unq - variable
 			}
 		}
 		else if ( m_flSoundTime > gpGlobals->time )

@@ -91,6 +91,7 @@ struct skilldata_t
 	float sentryHealth;
 
 	float ospreyHealth; //unq
+	float tentacleHealth; //unq
 
 // Player Weapons
 	float plrDmgCrowbar;

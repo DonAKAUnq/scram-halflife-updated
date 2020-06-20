@@ -456,6 +456,15 @@ cvar_t	sk_osprey_health3 = { "sk_osprey_health3","400" };
 
 // end unq - osprey
 
+// unq - and Tentacle health
+
+cvar_t	sk_tentacle_health1 = { "sk_tentacle_health1","75" };
+cvar_t	sk_tentacle_health2 = { "sk_tentacle_health2","300" };
+cvar_t	sk_tentacle_health3 = { "sk_tentacle_health3","500" };
+
+// end unq - potentacle
+
+
 // begin unq - Cvars for ammo capacities
 
 cvar_t	sk_ammo_uranium1 = { "sk_ammo_uranium1","100" };
@@ -979,6 +988,14 @@ void GameDLLInit( void )
 	CVAR_REGISTER(&sk_osprey_health3);
 
 // end unq - osprey health
+
+// unq - add tentacle
+
+CVAR_REGISTER(&sk_tentacle_health1);
+CVAR_REGISTER(&sk_tentacle_health2);
+CVAR_REGISTER(&sk_tentacle_health3);
+
+// end unq - tentacle health
 
 // begin unq - register ammo cvars
 
