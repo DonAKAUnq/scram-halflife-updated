@@ -2826,6 +2826,8 @@ edict_t *EntSelectSpawnPoint( CBaseEntity *pPlayer )
 	if ( FStringNull( gpGlobals->startspot ) || !strlen(STRING(gpGlobals->startspot)))
 	{
 		pSpot = UTIL_FindEntityByClassname(NULL, "info_player_start");
+		ALERT(at_console, "Resetting nucleon count\n");  //richard & unq
+		CVAR_SET_FLOAT("sv_numtokens", 0);
 		if ( !FNullEnt(pSpot) )
 			goto ReturnSpot;
 	}

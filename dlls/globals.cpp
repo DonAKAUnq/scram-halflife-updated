@@ -170,7 +170,9 @@ void CEnvGlobalCounter::Spawn(void)
 
 void CEnvGlobalCounter::Use(CBaseEntity* pActivator, CBaseEntity* pCaller, USE_TYPE useType, float value)
 {
-	int iOldValue = CGlobalCounters::Instance()->EntityGetState(m_sCounterName);
+	//int iOldValue = CGlobalCounters::Instance()->EntityGetState(m_sCounterName);
+	int iOldValue = CVAR_GET_FLOAT("sv_numtokens"); // unq - changed to use CVAR instead of using iOldValue (for direct map load reset)
+	//ALERT(at_console, "Counter old value = (%i)\n", iOldValue); // debugging only
 	int iNewValue;
 
 	switch (m_iChangeMode)

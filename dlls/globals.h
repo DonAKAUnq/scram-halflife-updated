@@ -4,7 +4,7 @@
 #ifndef __GLOBALS_H__
 #define __GLOBALS_H__
 
-#define COUNTERS_DBG_INFO 1
+#define COUNTERS_DBG_INFO 0 // unq - change to see counter console info
 
 typedef struct sGlobalCounter_s
 {
